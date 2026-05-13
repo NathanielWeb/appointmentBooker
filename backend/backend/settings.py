@@ -68,10 +68,16 @@ ROOT_URLCONF = 'backend.urls'
 # IMPORTANT: Add your deployed frontend url to do this once deployed
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://appointment-booker-chi.vercel.app",
+    "https://appointment-booker-git-main-nathanielwebs-projects.vercel.app",
+    "https://appointment-booker-38lnzm8me-nathanielwebs-projects.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://appointment-booker-git-main-nathanielwebs-projects.vercel.app",
+    "https://appointment-booker-38lnzm8me-nathanielwebs-projects.vercel.app",
+]
 
 TEMPLATES = [
     {
