@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from physicians.models import Physician
 from appointments.models import Appointment
 
+from datetime import date, timedelta
+import random
+
 User = get_user_model()
 
 
@@ -11,14 +14,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         # -----------------------
-        # Clean existing data (dev only)
+        # Reset DB (dev only)
         # -----------------------
         Appointment.objects.all().delete()
         Physician.objects.all().delete()
         User.objects.all().delete()
 
         # -----------------------
-        # 1. Superuser admin
+        # Admin
         # -----------------------
         admin = User.objects.create_user(
             username="admin",
@@ -32,107 +35,117 @@ class Command(BaseCommand):
         admin.save()
 
         # -----------------------
-        # 2. Physicians (3 specialties)
+        # Physicians
         # -----------------------
-        dr1_user = User.objects.create_user(
-            username="dr_smith",
-            password="pass123",
-            role="physician",
-            first_name="John",
-            last_name="Smith",
-        )
-        dr1 = Physician.objects.create(
-            user=dr1_user,
-            specialty="Cardiologist"
-        )
+        specialties = ["Cardiologist", "Dermatologist", "Pediatrician"]
 
-        dr2_user = User.objects.create_user(
-            username="dr_jones",
-            password="pass123",
-            role="physician",
-            first_name="Emily",
-            last_name="Jones",
-        )
-        dr2 = Physician.objects.create(
-            user=dr2_user,
-            specialty="Dermatologist"
-        )
+        physician_data = [
+            ("dr_smith", "John", "Smith"),
+            ("dr_jones", "Emily", "Jones"),
+            ("dr_lee", "David", "Lee"),
+        ]
 
-        dr3_user = User.objects.create_user(
-            username="dr_lee",
-            password="pass123",
-            role="physician",
-            first_name="David",
-            last_name="Lee",
-        )
-        dr3 = Physician.objects.create(
-            user=dr3_user,
-            specialty="Pediatrician"
-        )
+        physicians = []
+
+        for i, (username, first, last) in enumerate(physician_data):
+            user = User.objects.create_user(
+                username=username,
+                password="pass123",
+                role="physician",
+                first_name=first,
+                last_name=last,
+            )
+
+            physician = Physician.objects.create(
+                user=user,
+                specialty=specialties[i],
+            )
+            physicians.append(physician)
 
         # -----------------------
-        # 3. Patients
+        # Patients (40 users)
         # -----------------------
-        p1 = User.objects.create_user(
-            username="patient1",
-            password="pass123",
-            role="patient",
-            first_name="Alice",
-            last_name="Brown",
-        )
-
-        p2 = User.objects.create_user(
-            username="patient2",
-            password="pass123",
-            role="patient",
-            first_name="Mark",
-            last_name="Green",
-        )
-
-        p3 = User.objects.create_user(
-            username="patient3",
-            password="pass123",
-            role="patient",
-            first_name="Sarah",
-            last_name="White",
-        )
+        patients = []
+        for i in range(1, 41):
+            user = User.objects.create_user(
+                username=f"patient{i}",
+                password="pass123",
+                role="patient",
+                first_name=f"Patient{i}",
+                last_name="User",
+            )
+            patients.append(user)
 
         # -----------------------
-        # 4. Appointments
-        # Ensure each physician has at least 1
-        # and each patient has 1 appointment
+        # Time window (±4 weeks)
         # -----------------------
+        today = date.today()
+        start_date = today - timedelta(weeks=4)
+        end_date = today + timedelta(weeks=4)
 
-        Appointment.objects.create(
-            patient=p1,
-            physician=dr1,
-            appointment_date="2026-05-20",
-            appointment_time="09:00:00",
-            reason="Chest pain",
-            details="Recurring discomfort during exercise",
-            status="confirmed"
-        )
+        total_days = (end_date - start_date).days
 
-        Appointment.objects.create(
-            patient=p2,
-            physician=dr2,
-            appointment_date="2026-05-20",
-            appointment_time="10:00:00",
-            reason="Skin rash",
-            details="Itchy rash on arm for 3 days",
-            status="confirmed"
-        )
+        time_slots = ["09:00:00", "10:00:00", "11:00:00", "14:00:00", "15:00:00"]
+        statuses = ["confirmed", "pending", "cancelled"]
 
-        Appointment.objects.create(
-            patient=p3,
-            physician=dr3,
-            appointment_date="2026-05-20",
-            appointment_time="11:00:00",
-            reason="Fever",
-            details="Mild fever and fatigue for 2 days",
-            status="pending"
-        )
+        # -----------------------
+        # Appointment generation target
+        # -----------------------
+        TARGET_APPOINTMENTS = 80
+        MAX_PER_PATIENT = 3
+
+        appointment_count = 0
+
+        # Track how many appointments each patient has
+        patient_load = {p.id: 0 for p in patients}
+
+        # Flatten patient pool to allow controlled random selection
+        available_patients = patients[:]
+
+        while appointment_count < TARGET_APPOINTMENTS:
+
+            patient = random.choice(available_patients)
+
+            if patient_load[patient.id] >= MAX_PER_PATIENT:
+                available_patients.remove(patient)
+                continue
+
+            physician = random.choice(physicians)
+
+            random_day_offset = random.randint(0, total_days)
+            appointment_date = start_date + timedelta(days=random_day_offset)
+
+            appointment_time = random.choice(time_slots)
+
+            status = random.choices(
+                statuses,
+                weights=[0.5, 0.3, 0.2],
+                k=1
+            )[0]
+
+            Appointment.objects.create(
+                patient=patient,
+                physician=physician,
+                appointment_date=appointment_date,
+                appointment_time=appointment_time,
+                reason=random.choice([
+                    "General consultation",
+                    "Follow-up visit",
+                    "Routine check-up",
+                    "New symptoms review",
+                    "Test results discussion",
+                ]),
+                details="Seeded appointment for testing purposes.",
+                status=status,
+            )
+
+            patient_load[patient.id] += 1
+            appointment_count += 1
 
         self.stdout.write(
-            self.style.SUCCESS("Database seeded successfully")
+            self.style.SUCCESS(
+                f"Seed complete: {len(patients)} patients, "
+                f"{len(physicians)} physicians, "
+                f"{appointment_count} appointments"
+            )
         )
