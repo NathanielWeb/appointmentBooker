@@ -2,7 +2,7 @@
 
 ## How to Run the Project
 
-## Deployment
+### Deployment
 
 The project is deployed on Vercel:
 
@@ -10,7 +10,7 @@ The project is deployed on Vercel:
 
 ---
 
-## Patient Accounts
+### Patient Accounts
 
 To test patient booking, start by creating an account:
 
@@ -19,7 +19,7 @@ To test patient booking, start by creating an account:
 
 This will open a registration form where you can create a new patient account. After registration, you will be redirected to the patient dashboard.
 
-## Demo Patient Accounts (optional login)
+### Demo Patient Accounts (optional login)
 
 You can also log in using pre-seeded accounts:
 
@@ -33,7 +33,7 @@ Password for all patient accounts:
 
 The patient login buttons can be found in similar places to the registration buttons.
 
-## Booking Flow (Patient)
+### Booking Flow (Patient)
 
 After logging in:
 
@@ -51,28 +51,28 @@ After submission:
 - The appointment status will be “pending.”
 - It must be confirmed by the corresponding physician before it becomes active.
 
-## Canceling Appointments
+### Canceling Appointments
 
 - Each appointment includes a Cancel button.
 - Cancellation requires confirmation
 - This action is irreversible.
 
-## Logout
+### Logout
 
 - Use the Logout button in the top-right corner.
 
 ---
 
-## Physician / Admin Accounts
+### Physician / Admin Accounts
 
-## Accessing Admin / Physician Login
+### Accessing Admin / Physician Login
 
 You can log in as a physician or admin via:
 
 - “Administration Login” on the login page, or
 - “Admin / Physician Login” on the homepage
 
-## Physician Accounts
+### Physician Accounts
 
 - dr_smith
 - dr_jones
@@ -82,7 +82,7 @@ Password for all physician accounts:
 
 - pass123
 
-## Physician Dashboard Features
+### Physician Dashboard Features
 
 After login, physicians can:
 
@@ -92,12 +92,12 @@ After login, physicians can:
 
 ---
 
-## Admin Account
+### Admin Account
 
 - Username: admin
 - Password: admin123
 
-## Admin Dashboard Features
+### Admin Dashboard Features
 
 Admins can:
 
@@ -114,7 +114,7 @@ The Appointment Booker application (PhysFind) is a lightweight appointment booki
 - Physicians
 - Administrators
 
-## Core Features
+### Core Features
 
 - Patient appointment booking flow (physician, date, time, details)
 - Physician dashboard for managing appointments
@@ -124,7 +124,7 @@ The Appointment Booker application (PhysFind) is a lightweight appointment booki
 - Server-side conflict prevention for scheduling
 - Seeded demo accounts for quick testing
 
-## Tech Stack
+### Tech Stack
 
 - Frontend: Next.js (App Router), React, TypeScript, TailwindCSS
 - Backend: Django REST Framework
@@ -134,7 +134,7 @@ The Appointment Booker application (PhysFind) is a lightweight appointment booki
 
 ## Key Technical / Product Decisions
 
-## 1. JWT-Based Authentication
+### 1. JWT-Based Authentication
 
 JWT was chosen to decouple the frontend and backend and simplify deployment.
 
@@ -144,7 +144,7 @@ JWT was chosen to decouple the frontend and backend and simplify deployment.
 
 ---
 
-## 2. Role-Based User Model
+### 2. Role-Based User Model
 
 A single user model with a role field is used instead of multiple auth systems.
 
@@ -156,7 +156,7 @@ Benefits:
 
 ---
 
-## 3. Django App Separation
+### 3. Django App Separation
 
 The backend is split into three domain-focused apps:
 
@@ -168,7 +168,7 @@ This improves maintainability and separation of concerns.
 
 ---
 
-## 4. Server-Side Scheduling Integrity
+### 4. Server-Side Scheduling Integrity
 
 All booking rules are enforced on the backend:
 
@@ -181,7 +181,7 @@ This ensures the frontend cannot bypass business rules.
 
 ---
 
-## 5. Availability as a Backend Responsibility
+### 5. Availability as a Backend Responsibility
 
 Instead of calculating availability on the client:
 
@@ -194,7 +194,7 @@ This avoids inconsistencies across clients.
 
 ## What I Would Improve With More Time
 
-## 1. Email-Based Authentication
+### 1. Email-Based Authentication
 
 The current system does not use email verification.
 
@@ -206,7 +206,7 @@ If extended:
 
 ---
 
-## 2. Physician Availability Management
+### 2. Physician Availability Management
 
 Currently, physician availability is fixed.
 
@@ -215,3 +215,9 @@ Future improvement:
 - Allow physicians to define custom availability windows.
 - Support dynamic scheduling rules per physician.
 - Improve backend scheduling model flexibility.
+
+# IMPORTANT NOTICE:
+The backend of this project is hosted on Render's free tier. According to Render the "free instance will spin down with inactivity, which can delay requests by 50 seconds or more".
+
+I have attempted to mitigate this issue using an uptime ticker. However, it is possible that the ticker fails, and the instance
+has spun down. In this case, just wait for a minute and the application will proceed as normal. 
