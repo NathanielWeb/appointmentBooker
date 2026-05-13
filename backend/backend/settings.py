@@ -109,8 +109,9 @@ DATABASES = {
         'HOST': config("DB_HOST"),
         'PORT': config("DB_PORT"),
         'OPTIONS': {
-            'ssl': {'ca': config("DB_SSL")}
-        }  
+            'sslmode': 'verify-full',
+            'sslrootcert': config("DB_SSL")
+        }
     }
 }
 
