@@ -155,7 +155,13 @@ export default function PhysicianDashboard() {
                         >
                             <div className="flex justify-between">
                                 <div>
-                                    <p className="font-medium">
+                                    {/* PATIENT INFO */}
+                                    <p className="text-sm font-semibold text-slate-700">
+                                        Patient: {a.patient.first_name}{" "}
+                                        {a.patient.last_name}
+                                    </p>
+
+                                    <p className="mt-1 font-medium">
                                         {a.appointment_date} at{" "}
                                         {a.appointment_time}
                                     </p>

@@ -5,6 +5,7 @@ from datetime import datetime
 from .models import Appointment
 from physicians.models import Physician
 from physicians.serializers import PhysicianSerializer
+from accounts.serializers import UserSerializer
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
@@ -17,10 +18,13 @@ class AppointmentSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    patient = UserSerializer(read_only=True)
+
     class Meta:
         model = Appointment
         fields = [
             "id",
+            "patient",
             "physician",
             "physician_detail",
             "appointment_date",

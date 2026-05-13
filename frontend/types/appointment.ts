@@ -8,6 +8,13 @@ export default interface Appointment {
 
     physician: number;
 
+    patient: {
+        id: number;
+        username?: string;
+        first_name: string;
+        last_name: string;
+    };
+
     physician_detail: {
         id: number;
         first_name: string;

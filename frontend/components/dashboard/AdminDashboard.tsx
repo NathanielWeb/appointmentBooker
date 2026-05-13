@@ -121,7 +121,14 @@ export default function AdminDashboard() {
                             <div className="flex justify-between">
                                 <div>
                                     <p className="font-medium">
-                                        Dr. {a.physician_detail.first_name} {a.physician_detail.last_name}
+                                        Dr. {a.physician_detail.first_name}{" "}
+                                        {a.physician_detail.last_name}
+                                    </p>
+
+                                    {/* PATIENT */}
+                                    <p className="text-sm text-slate-600">
+                                        Patient: {a.patient.first_name}{" "}
+                                        {a.patient.last_name}
                                     </p>
 
                                     <p className="text-sm text-slate-500">

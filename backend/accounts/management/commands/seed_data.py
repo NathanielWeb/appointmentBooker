@@ -66,13 +66,31 @@ class Command(BaseCommand):
         # Patients (40 users)
         # -----------------------
         patients = []
+
+        first_names = [
+            "Liam", "Noah", "Oliver", "Elijah", "James",
+            "William", "Benjamin", "Lucas", "Henry", "Alexander",
+            "Emma", "Olivia", "Ava", "Sophia", "Isabella",
+            "Mia", "Amelia", "Harper", "Evelyn", "Abigail"
+        ]
+
+        last_names = [
+            "Smith", "Johnson", "Brown", "Taylor", "Anderson",
+            "Thomas", "Jackson", "White", "Harris", "Martin"
+        ]
+
+        name_pool = [(f, l) for f in first_names for l in last_names]
+        random.shuffle(name_pool)
+
         for i in range(1, 41):
+            first, last = name_pool[i - 1]
+
             user = User.objects.create_user(
                 username=f"patient{i}",
                 password="pass123",
                 role="patient",
-                first_name=f"Patient{i}",
-                last_name="User",
+                first_name=first,
+                last_name=last,
             )
             patients.append(user)
 
