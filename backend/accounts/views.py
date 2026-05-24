@@ -88,15 +88,15 @@ class LogoutView(APIView):
         response = Response({"detail": "Logged out"}, status=200)
 
         try:
-            refresh_token = request.COOKIES.get("refresh")
+            refresh_token = request.COOKIES.get("refresh_token")
             if refresh_token:
                 token = RefreshToken(refresh_token)
                 token.blacklist()
         except Exception:
             pass
 
-        response.delete_cookie("access")
-        response.delete_cookie("refresh")
+        response.delete_cookie("access_token", path="/")
+        response.delete_cookie("refresh_token", path="/")
 
         return response
 
