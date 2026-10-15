@@ -95,32 +95,38 @@ class Command(BaseCommand):
             patients.append(user)
 
         # -----------------------
-        # Time window (±4 weeks)
+        # Time window 
         # -----------------------
-        today = date.today()
-        start_date = today - timedelta(weeks=4)
-        end_date = today + timedelta(weeks=4)
+        start_date = date(2026, 8, 1)
+        cutoff_date = date(2026, 10, 15)
+        end_date = date(2026, 12, 30)
 
-        total_days = (end_date - start_date).days
+        time_slots = [
+            "09:00:00",
+            "10:00:00",
+            "11:00:00",
+            "14:00:00",
+            "15:00:00",
+        ]
 
-        time_slots = ["09:00:00", "10:00:00", "11:00:00", "14:00:00", "15:00:00"]
-        statuses = ["confirmed", "pending", "cancelled"]
+        past_statuses = ["confirmed", "cancelled"]
+        future_statuses = ["confirmed", "pending", "cancelled"]
 
-        # -----------------------
-        # Appointment generation target
-        # -----------------------
-        TARGET_APPOINTMENTS = 80
-        MAX_PER_PATIENT = 3
+        TARGET_APPOINTMENTS = 300
+        MAX_PER_PATIENT = 8
 
         appointment_count = 0
-
-        # Track how many appointments each patient has
         patient_load = {p.id: 0 for p in patients}
-
-        # Flatten patient pool to allow controlled random selection
         available_patients = patients[:]
 
         while appointment_count < TARGET_APPOINTMENTS:
+            if not available_patients:
+                self.stdout.write(
+                    self.style.ERROR(
+                        "Could not generate enough appointments."
+                    )
+                )
+                return
 
             patient = random.choice(available_patients)
 
@@ -130,16 +136,27 @@ class Command(BaseCommand):
 
             physician = random.choice(physicians)
 
-            random_day_offset = random.randint(0, total_days)
-            appointment_date = start_date + timedelta(days=random_day_offset)
+            random_day_offset = random.randint(
+                0, (end_date - start_date).days
+            )
+            appointment_date = start_date + timedelta(
+                days=random_day_offset
+            )
 
             appointment_time = random.choice(time_slots)
 
-            status = random.choices(
-                statuses,
-                weights=[0.5, 0.3, 0.2],
-                k=1
-            )[0]
+            if appointment_date < cutoff_date:
+                status = random.choices(
+                    past_statuses,
+                    weights=[0.7, 0.3],
+                    k=1,
+                )[0]
+            else:
+                status = random.choices(
+                    future_statuses,
+                    weights=[0.4, 0.4, 0.2],
+                    k=1,
+                )[0]
 
             Appointment.objects.create(
                 patient=patient,
