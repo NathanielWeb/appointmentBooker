@@ -6,7 +6,7 @@
 
 The project is deployed on Vercel:
 
-- Vercel Deployment: <a href="[https://appointment-booker-38lnzm8me-nathanielwebs-projects.vercel.app/](https://appointment-booker-chi.vercel.app/)" target="_blank" rel="noopener noreferrer">Link to Vercel deployment</a>
+- Vercel Deployment: <a href="https://appointment-booker-chi.vercel.app/" target="_blank" rel="noopener noreferrer">Link to Vercel deployment</a>
 
 ---
 
